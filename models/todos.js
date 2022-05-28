@@ -1,20 +1,53 @@
-const {pool: db} = require('../config');
+const db = require('../config/index');
 
 class todosController {
-    async getTodos(params) {
-        let {username, status, page, limit} = params;
-        page = page || 1;
-        limit = limit || 10;
+  async getTodos(params) {
+    const {
+      username,
+      status
+    } = params;
+    const page = params.page || 1;
+    const limit = params.limit || 10;
 
-        let offset = page * limit - limit;
+    const offset = page * limit - limit;
 
-        return await db
-            .query(
-                `SELECT * from todos 
-                    WHERE username = $1::text`,
-                [username]
-            );
+    const query = db('todos')
+      .select()
+      .offset(offset);
+
+    if (username) {
+      query.andWhere('username', username);
     }
+
+    if (status) {
+      query.where('status', status);
+    }
+
+    if (limit) {
+      query.limit(limit);
+    }
+
+    const rows = await query;
+
+    return rows;
+  }
+
+  async createTodo(body) {
+
+    await db('todos')
+      .insert(body)
+      .returning('*');
+  }
+
+  async updateTodo(id, body) {
+    const {text, status} = body;
+
+    await db('todos')
+      .select()
+      .where('id', id)
+      .update({text, status})
+      .returning('*');
+  }
 }
-// select * from todos where username = 'Daniel' and status = 'canceled' limit 5 offset 0
+
 module.exports = new todosController();

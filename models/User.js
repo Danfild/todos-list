@@ -1,25 +1,19 @@
-const {pool: db} = require('../config');
+const db = require('../config/index');
 
 class UserController {
-    async createUser(params) {
-        const {name, email, password} = params;
+  async createUser(params) {
+    await db('users')
+      .insert(params)
+      .returning(['username', 'email', 'password']);
+  }
 
-        return await db
-            .query(
-                `INSERT INTO users (userName, email, password) values ($1, $2, $3) RETURNING *`,
-                [name, email, password]
-            );
-    }
+  async getUser(params) {
+    const {email} = params;
 
-    async getUser(params) {
-        const {email} = params;
-
-        return await db
-            .query(
-                `SELECT * FROM users WHERE email = $1::text`,
-                [email]
-            );
-    }
+    await db('users')
+      .select('email')
+      .whereIn('email', email);
+  }
 }
 
 module.exports = new UserController();

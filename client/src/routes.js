@@ -1,22 +1,19 @@
-import React from 'react';
-import {Routes, Route} from 'react-router-dom';
-import {Login} from "./components/Login";
+import {AUTH_ROUTE, LOGIN_ROUTE, TODOS_ROUTE} from "./utils/consts";
+import {TodoList} from "./components/TodoList";
 import {Auth} from "./components/Auth";
+import {Login} from "./components/Login";
 
-export const useRoutes = isAuth => {
-    console.log(isAuth)
-    if (isAuth) {
-        return (
-            <Routes>
-                <Route path="/login" element={<Login />}/>
-                <Route path="/auth" element={<Auth />}/>
-            </Routes>
-        )
+export const publicRoutes = [
+    {
+        path: TODOS_ROUTE,
+        Component: TodoList
+    },
+    {
+        path: AUTH_ROUTE,
+        Component: Auth
+    },
+    {
+        path: LOGIN_ROUTE,
+        Component: Login
     }
-
-    return (
-        <Routes>
-            <Route path="/auth" element={<Auth />} />
-        </Routes>
-    )
-}
+]

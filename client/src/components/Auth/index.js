@@ -12,7 +12,6 @@ export const Auth = () => {
                         </span>
                         <div className="input-field">
                             <input
-                                placeholder="Введите email"
                                 id="email"
                                 type="text"
                                 name="email"
@@ -24,7 +23,6 @@ export const Auth = () => {
                         </div>
                         <div className="input-field">
                             <input
-                                placeholder="Введите username"
                                 id="username"
                                 type="text"
                                 name="username"
@@ -36,7 +34,6 @@ export const Auth = () => {
                         </div>
                         <div className="input-field">
                             <input
-                                placeholder=" пароль"
                                 id="password"
                                 type="password"
                                 name="password"
