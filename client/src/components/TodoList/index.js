@@ -1,5 +1,6 @@
-import React, {useContext} from 'react';
+import React, {useContext, MouseEvent} from 'react';
 import {Context} from '../../index'
+import {observer} from 'mobx-react-lite';
 import {
     Button,
     Table,
@@ -9,58 +10,114 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Paper
+    Paper,
+    TablePagination,
+    Checkbox
 } from '@mui/material';
+import FormDialog from "./CreateTodoDialog";
+import AlertComponent from "./Alert";
 
-export const TodoList = () => {
-    const TodoStores = useContext(Context);
-    const {todos} = TodoStores.todo;
+const TodoList = observer(() => {
+    const {todo, users} = useContext(Context);
+    const {isAuth} = users;
+    const {
+        todos,
+        getTodos,
+        count,
+        limit,
+        offset,
+        setLimit,
+        setOffset,
+        setOpenDialogWindow
+    } = todo;
 
     return (
-        <div>
-            <Typography variant="h5">
+        <div style={{padding: '80px'}}>
+            <AlertComponent/>
+            <Typography
+                align={'center'}
+                gutterBottom={true}
+                noWrap={true}
+                variant="h3">
                 Todos list
             </Typography>
             <div>
                 <TableContainer component={Paper}>
-                    <Table sx={{minWidth: 650}} size="small" aria-label="a dense table">
+                    <Table sx={{minWidth: 500}} size="small" aria-label="a dense table">
                         <TableHead>
-                            <TableRow>
-                                <TableCell>UserName</TableCell>
-                                <TableCell align="right">Email</TableCell>
-                                <TableCell align="right">Text</TableCell>
+                            <TableRow
+                                hover
+                                // onClick={(event) => handleClick(event, row.name)}
+                                role="checkbox"
+                                aria-checked={true}
+                                key={54}
+                                // selected={isItemSelected}
+                            >
+                                {isAuth && (
+                                <TableCell padding="checkbox">
+                                        <Checkbox
+                                            color="primary"
+                                            checked={null}
+                                            // inputProps={{
+                                            //     'aria-labelledby': 77,
+                                            // }}
+                                        />
+                                    </TableCell>
+                                )}
+                                <TableCell component="th" scope="row">UserName</TableCell>
+                                <TableCell align="left">Email</TableCell>
+                                <TableCell align="center">Text</TableCell>
                                 <TableCell align="right">Status</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {todos.map((row, index) => (
-                                <TableRow
+                            {todos.map((row, index) => (<TableRow
                                     key={index}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                 >
-                                    <TableCell component="th" scope="row">
-                                        {row.username}
+                                {/*{isAuth && (*/}
+                                    <TableCell padding="checkbox">
+                                        <Checkbox
+                                            color="primary"
+                                            checked={null}
+                                            // inputProps={{
+                                            //     'aria-labelledby': 77,
+                                            // }}
+                                        />
                                     </TableCell>
-                                    <TableCell align="right">{row.email}</TableCell>
-                                    <TableCell align="right">{row.text}</TableCell>
+                                {/*)}*/}
+                                    <TableCell component="th" scope="row">{row.username}</TableCell>
+                                    <TableCell align="left">{row.email}</TableCell>
+                                    <TableCell align="center">{row.text}</TableCell>
                                     <TableCell align="right">{row.status}</TableCell>
-                                </TableRow>
-                            ))}
+                                </TableRow>))}
                         </TableBody>
                     </Table>
+                    <TablePagination
+                        rowsPerPageOptions={[3, 6, 10]}
+                        component="div"
+                        count={count}
+                        rowsPerPage={limit}
+                        page={offset}
+                        onPageChange={setOffset}
+                        onRowsPerPageChange={setLimit}
+                    />
                 </TableContainer>
             </div>
-            <div>
-            <Button
-                variant="contained"
-                color={'inherit'}
-                onClick={() => {
-                    console.log(todos)
-                }}
-            >
-                Hello World
-            </Button>
+            {isAuth && (
+                <div style={{padding: '10px'}}>
+                <Button
+                    variant="contained"
+                    color={'inherit'}
+                    onClick={() => setOpenDialogWindow(true)}
+                >
+                    Create todo
+                </Button>
+                    <FormDialog />
             </div>
+            )}
         </div>
     )
-};
+});
+
+export default TodoList;

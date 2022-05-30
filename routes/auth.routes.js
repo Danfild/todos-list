@@ -7,9 +7,9 @@ const router = Router();
 router.post(
   '/register',
   [
-    check('username', 'Некорректный username').isLength({min: 6}),
+    check('username', 'Некорректный username').isLength({min: 3}),
     check('email', 'Некорректный email').isEmail(),
-    check('password', 'Минимальная длина  password 6 символов').isLength({min: 6})
+    check('password', 'Минимальная длина  password 6 символов').isLength({min: 3})
   ],
   async(req, res) => {
     try {

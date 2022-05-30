@@ -12,7 +12,8 @@ class UserController {
 
     await db('users')
       .select('email')
-      .whereIn('email', email);
+      .whereIn('email', email)
+      .returning('*');
   }
 }
 

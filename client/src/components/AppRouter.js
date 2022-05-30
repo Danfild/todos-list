@@ -1,6 +1,6 @@
 import React from 'react';
 import {Routes, Route} from 'react-router-dom';
-import {TodoList} from "../components/TodoList";
+import TodoList from "../components/TodoList";
 import {publicRoutes} from "../routes";
 
 export const AppRouter = isAuth => {
@@ -16,7 +16,7 @@ export const AppRouter = isAuth => {
 
     return (
         <Routes>
-            <Route path="/" element={<TodoList />} />
+            <Route path="/todos" element={<TodoList />} />
         </Routes>
     )
 }

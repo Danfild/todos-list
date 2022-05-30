@@ -1,5 +1,5 @@
 import {AUTH_ROUTE, LOGIN_ROUTE, TODOS_ROUTE} from "./utils/consts";
-import {TodoList} from "./components/TodoList";
+import TodoList from "./components/TodoList";
 import {Auth} from "./components/Auth";
 import {Login} from "./components/Login";
 

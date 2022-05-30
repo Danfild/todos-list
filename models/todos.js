@@ -1,19 +1,19 @@
 const db = require('../config/index');
 
 class todosController {
-  async getTodos(params) {
+  getTodos(params) {
     const {
       username,
-      status
+      status,
+      orders
     } = params;
-    const page = params.page || 1;
-    const limit = params.limit || 10;
 
-    const offset = page * limit - limit;
+    const page = Number(params.page) || 0;
+    const limit = Number(params.limit) || 5;
+    const offset = page * limit / limit + page;
 
     const query = db('todos')
-      .select()
-      .offset(offset);
+      .select();
 
     if (username) {
       query.andWhere('username', username);
@@ -27,9 +27,17 @@ class todosController {
       query.limit(limit);
     }
 
-    const rows = await query;
+    if (offset) {
+      query.offset(offset);
+    }
 
-    return rows;
+    if (orders) {
+      const {field, predicate} = JSON.parse(orders);
+
+      query.orderBy(field, predicate);
+    }
+
+    return query;
   }
 
   async createTodo(body) {
@@ -48,6 +56,15 @@ class todosController {
       .update({text, status})
       .returning('*');
   }
+
+  getCount = async() => {
+    const query = await db('todos')
+      .count('id');
+
+    const [{count}] = await query;
+
+    return Number(count);
+  };
 }
 
 module.exports = new todosController();
