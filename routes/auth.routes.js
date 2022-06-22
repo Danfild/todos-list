@@ -29,8 +29,7 @@ router.post(
 
       res.status(201).json({message: `Пользователь ${username} создан`});
     } catch(e) {
-      console.log(e);
-      res.status(500).json({message: 'Произошла ошибка'});
+      res.status(500).json({message: `Произошла ошибка: ${e.message}`});
     }
   }
 );
@@ -69,8 +68,7 @@ router.post(
 
       res.status(201).json({message: 'Введенные данные верны'});
     } catch(e) {
-      console.log(e);
-      res.status(500).json({message: 'Произошла ошибка'});
+      res.status(500).json({message: `Произошла ошибка: ${e.message}`});
     }
   }
 );

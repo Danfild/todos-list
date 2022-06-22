@@ -41,7 +41,7 @@ class todosController {
   }
 
   async createTodo(body) {
-
+    console.log(body)
     await db('todos')
       .insert(body)
       .returning('*');
@@ -49,11 +49,24 @@ class todosController {
 
   async updateTodo(id, body) {
     const {text, status} = body;
+    const dateTime = new Date();
 
     await db('todos')
       .select()
       .where('id', id)
-      .update({text, status})
+      .update({text, status, 'updatedAt': dateTime})
+      .returning('*');
+  }
+
+  async updateTodos(ids, body) {
+    const {status} = body;
+
+    const dateTime = new Date();
+
+    await db('todos')
+      .select()
+      .whereIn('id', ids)
+      .update({status, 'updatedAt': dateTime})
       .returning('*');
   }
 

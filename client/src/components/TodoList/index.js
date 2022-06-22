@@ -1,4 +1,4 @@
-import React, {useContext, MouseEvent} from 'react';
+import React, {useContext} from 'react';
 import {Context} from '../../index'
 import {observer} from 'mobx-react-lite';
 import {
@@ -14,7 +14,11 @@ import {
     TablePagination,
     Checkbox
 } from '@mui/material';
-import FormDialog from "./CreateTodoDialog";
+import EditIcon from '@mui/icons-material/Edit';
+import styles from './todoListStyle.scss';
+import CreateTodo from "./CreateTodo";
+import ChangeStatusTodo from "./ChangeStatusTodo";
+import EditTodoText from "./EditTodoText";
 import AlertComponent from "./Alert";
 
 const TodoList = observer(() => {
@@ -22,18 +26,21 @@ const TodoList = observer(() => {
     const {isAuth} = users;
     const {
         todos,
-        getTodos,
         count,
         limit,
         offset,
         setLimit,
         setOffset,
-        setOpenDialogWindow
+        setOpenDialogWindow,
+        setOpenEditWindow,
+        setOpenChangeStatusWindow,
+        setCheckedItem,
+        setCurrentTodo
     } = todo;
 
+    const checkIsChecked = Boolean(todos.find(({isChecked}) => isChecked))
     return (
-        <div style={{padding: '80px'}}>
-            <AlertComponent/>
+        <div className="alert">
             <Typography
                 align={'center'}
                 gutterBottom={true}
@@ -43,78 +50,95 @@ const TodoList = observer(() => {
             </Typography>
             <div>
                 <TableContainer component={Paper}>
-                    <Table sx={{minWidth: 500}} size="small" aria-label="a dense table">
+                    <Table size="medium" aria-label="a dense table">
                         <TableHead>
-                            <TableRow
-                                hover
-                                // onClick={(event) => handleClick(event, row.name)}
-                                role="checkbox"
-                                aria-checked={true}
-                                key={54}
-                                // selected={isItemSelected}
-                            >
-                                {isAuth && (
-                                <TableCell padding="checkbox">
-                                        <Checkbox
-                                            color="primary"
-                                            checked={null}
-                                            // inputProps={{
-                                            //     'aria-labelledby': 77,
-                                            // }}
-                                        />
-                                    </TableCell>
-                                )}
-                                <TableCell component="th" scope="row">UserName</TableCell>
+                            <TableRow>
+                                <TableCell/>
+                                <TableCell >Status</TableCell>
+                                <TableCell align="left">UserName</TableCell>
                                 <TableCell align="left">Email</TableCell>
                                 <TableCell align="center">Text</TableCell>
-                                <TableCell align="right">Status</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {todos.map((row, index) => (<TableRow
+                            {todos.map((row, index) => (
+                                <TableRow
                                     key={index}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                 >
-                                {/*{isAuth && (*/}
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            color="primary"
-                                            checked={null}
-                                            // inputProps={{
-                                            //     'aria-labelledby': 77,
-                                            // }}
-                                        />
-                                    </TableCell>
-                                {/*)}*/}
-                                    <TableCell component="th" scope="row">{row.username}</TableCell>
+                                    {isAuth && (
+                                        <TableCell padding="checkbox">
+                                            <Checkbox
+                                                color="primary"
+                                                checked={row.isChecked ? row.isChecked : false}
+                                                onClick={() => {
+                                                    setCheckedItem(row.id, !row.isChecked);
+                                                }}
+                                            />
+                                        </TableCell>
+                                    )}
+                                    <TableCell>{row.status === true ? 'В работе' : 'Не в работе'}</TableCell>
+                                    <TableCell>{row.username}</TableCell>
                                     <TableCell align="left">{row.email}</TableCell>
-                                    <TableCell align="center">{row.text}</TableCell>
-                                    <TableCell align="right">{row.status}</TableCell>
-                                </TableRow>))}
+                                    <TableCell
+                                        sx={{maxWidth: 100}}
+                                        align="justify"
+                                        size={"medium"}
+                                    >
+                                        {isAuth && (
+                                            <Button
+                                            className="editButtonText"
+                                            size={"small"}
+                                            startIcon={<EditIcon/>}
+                                            onClick={() => {
+                                                setOpenEditWindow(true);
+                                                setCurrentTodo(row.id, row.text)
+                                            }}
+                                        />
+                                            )}
+                                        {row.text}
+                                    </TableCell>
+                                </TableRow>
+                                )
+                            )}
                         </TableBody>
                     </Table>
-                    <TablePagination
-                        rowsPerPageOptions={[3, 6, 10]}
-                        component="div"
-                        count={count}
-                        rowsPerPage={limit}
-                        page={offset}
-                        onPageChange={setOffset}
-                        onRowsPerPageChange={setLimit}
-                    />
+                    {count > 3 && (
+                        <TablePagination
+                            rowsPerPageOptions={[3, 6, 10]}
+                            component="div"
+                            count={count}
+                            rowsPerPage={limit}
+                            page={offset}
+                            onPageChange={setOffset}
+                            onRowsPerPageChange={setLimit}
+                        />
+                    )}
                 </TableContainer>
             </div>
             {isAuth && (
-                <div style={{padding: '10px'}}>
-                <Button
-                    variant="contained"
-                    color={'inherit'}
-                    onClick={() => setOpenDialogWindow(true)}
-                >
-                    Create todo
-                </Button>
-                    <FormDialog />
-            </div>
+                <div className="button">
+                    <Button
+                        variant="contained"
+                        color={'primary'}
+                        onClick={() => setOpenDialogWindow(true)}
+                    >
+                        Create todo
+                    </Button>
+                    {checkIsChecked && (
+                        <Button
+                        className="editButton"
+                        variant="contained"
+                        color={'primary'}
+                        onClick={() => setOpenChangeStatusWindow(true)}
+                    >
+                       Change status
+                    </Button>
+                    )}
+                    <CreateTodo />
+                    <ChangeStatusTodo />
+                    <EditTodoText />
+                </div>
             )}
         </div>
     )

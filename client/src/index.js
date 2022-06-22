@@ -1,6 +1,5 @@
 import React, {createContext} from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import App from './App';
 import TodoListStore from "./stores/components/TodoList";
 import UsersStore from "./stores/components/Users";

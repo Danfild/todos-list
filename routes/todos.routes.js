@@ -27,11 +27,13 @@ router.post(
   async(req, res) => {
     try {
       const {
-        username, status, text, email
+        username, text, email
       } = req.body;
 
+      const createdAt = new Date();
+
       await todos.createTodo({
-        username, status, text, email
+        username, text, email, createdAt
       });
 
       res.status(201).json({message: `todo создан`});
@@ -46,15 +48,32 @@ router.put(
   '/updatetodo',
   async(req, res) => {
     try {
-      const {id} = req.query;
-      const {status, text} = req.body;
+      // const {id} = req.query;
+      const {id, status, text} = req.body;
 
+      console.log(req.query);
+      console.log(req.body);
       await todos.updateTodo(id, {status, text});
 
       res.status(201).json({message: `todo обновлен`});
     } catch(e) {
       console.log(e);
       res.status(500).json({message: 'Произошла ошибка'});
+    }
+  }
+);
+
+router.post(
+  '/updatetodos',
+  async(req, res) => {
+    try {
+      const {ids, status} = req.body;
+
+      await todos.updateTodos(ids, {status});
+
+      res.status(201).json({message: 'Статусы todos обновлены'});
+    } catch(e) {
+      res.status(500).json({message: `Произошла ошибка: ${e.message}`});
     }
   }
 );
@@ -69,7 +88,7 @@ router.get(
       return res.json(count);
     } catch(e) {
       console.log(e);
-      res.status(500).json({message: 'Произошла ошибка'});
+      res.status(500).json({message: `Произошла ошибка: ${e.message}`});
     }
   }
 );

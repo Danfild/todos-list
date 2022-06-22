@@ -11,7 +11,7 @@ import {
     DialogTitle,
 } from '@mui/material';
 
-const FormDialog = observer(() => {
+const CreateTodo = observer(() => {
     const {todo} = useContext(Context);
     const {
         openDialogWindow,
@@ -23,7 +23,7 @@ const FormDialog = observer(() => {
         getDescriptionTodo,
         getValidationFields
     } = todo;
-    console.log(getName)
+
     return (
         <div>
             <Dialog open={openDialogWindow} onClose={() => setOpenDialogWindow(false)}>
@@ -45,7 +45,6 @@ const FormDialog = observer(() => {
                         variant="outlined"
                     />
                     <TextField
-                        autoFocus
                         margin="dense"
                         id="name"
                         error={!getName}
@@ -58,7 +57,6 @@ const FormDialog = observer(() => {
                         variant="outlined"
                     />
                     <TextField
-                        autoFocus
                         margin="dense"
                         error={!getDescriptionTodo}
                         id="text"
@@ -80,4 +78,4 @@ const FormDialog = observer(() => {
     );
 });
 
-export default FormDialog;
+export default CreateTodo;
